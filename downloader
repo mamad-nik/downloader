@@ -1,0 +1,50 @@
+#!/bin/bash
+
+function cleanup {
+	echo "download interrupted"
+	exit 1
+}
+
+if [ -z "$1" ]
+then    
+        echo "input missing"
+else    
+        if [ -z "$2" ]
+        then
+		if [ -f "$1" ] 
+		then
+			echo "$1 is a file and in order to download from URls included in a file, you should provide a second argument that look like this:"
+		       	echo "\"seq\" for sequential download" 
+			echo "\"par\" for parallel download"
+			exit 1
+		else
+                	echo "downloading a single file"
+                	aria2c -x16 --split=16 --max-concurrent-downloads=16 --max-download-limit=0 --continue=true $1
+        	fi
+	else    
+                if [ "$2" == "seq" ] 
+                then    
+                        echo "downloading multiple files from $1 sequentially"
+                        
+   			interrupted=false
+   			trap 'interrupted=true' INT
+			
+			while read line 
+                        do
+                                aria2c -x16 --split=16 --max-concurrent-downloads=16 --max-download-limit=0 --continue=true $line
+				if [ "$interrupted" = true ]
+			       	then
+            				echo "Download interrupted"
+            				exit 0
+				fi
+                        done < $1
+                elif [ "$2" == "par" ]
+                then
+                        echo "downloading multiple files from $1 in parallel"
+                        aria2c -x16 --split=16 --max-concurrent-downloads=16 --max-download-limit=0 --continue=true -i $1
+                else 
+                        echo "the second option is not irrelevant, only options are \"seq\" and \"par\""
+                fi      
+        fi      
+fi      
+
