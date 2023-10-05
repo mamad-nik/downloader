@@ -1,7 +1,7 @@
-#Description
+# Description
 A really simple tool for downloading in terminal. 
 It's basically an interface for aria2.
-#Installation
+# Installation
 Get the code and get into the directory:
 ```
 git clone https://github.com/mamad-nik/downloader.git
