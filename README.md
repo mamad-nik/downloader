@@ -20,4 +20,4 @@ move it to a directory in your PATH:
 cp downloader /path/to/the/directory/
 ```
 
-enjoy using it 
+enjoy using it. 
